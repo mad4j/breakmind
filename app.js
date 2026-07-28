@@ -123,13 +123,14 @@ function generateTokens() {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const gameAreaRect = gameArea.getBoundingClientRect();
     const tokenSize = 56;
-    const gridSize = 3;
-    const cellWidth = gameAreaRect.width / gridSize;
-    const cellHeight = gameAreaRect.height / gridSize;
+    const minGridRows = 6;
+    const minGridCols = 9;
+    const cellWidth = gameAreaRect.width / minGridCols;
+    const cellHeight = gameAreaRect.height / minGridRows;
     const cells = [];
 
-    for (let row = 0; row < gridSize; row++) {
-        for (let col = 0; col < gridSize; col++) {
+    for (let row = 0; row < minGridRows; row++) {
+        for (let col = 0; col < minGridCols; col++) {
             cells.push({ row, col });
         }
     }
