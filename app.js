@@ -6,6 +6,7 @@ let gameState = {
     phase1Elapsed: 0,
     phase2Elapsed: 0,
     timerInterval: null,
+    phase1ListenerTimeout: null,
     isGameActive: false
 };
 
@@ -46,6 +47,7 @@ function startGame() {
         phase1Elapsed: 0,
         phase2Elapsed: 0,
         timerInterval: null,
+        phase1ListenerTimeout: null,
         isGameActive: true
     };
 
@@ -59,6 +61,7 @@ function startGame() {
 }
 
 function cleanupPhase1Listeners() {
+    clearTimeout(gameState.phase1ListenerTimeout);
     document.removeEventListener('click', onPhase1Touch);
     document.removeEventListener('touchstart', onPhase1Touch);
 }
@@ -75,8 +78,13 @@ function startPhase1Timer() {
     const startTime = Date.now();
     const maxDuration = 10000;
 
-    document.addEventListener('click', onPhase1Touch);
-    document.addEventListener('touchstart', onPhase1Touch);
+    // Defer listener registration so the click that started the game
+    // finishes bubbling before we begin listening for the phase-1 tap.
+    // Store the timeout ID so it can be cancelled if the game restarts.
+    gameState.phase1ListenerTimeout = setTimeout(() => {
+        document.addEventListener('click', onPhase1Touch);
+        document.addEventListener('touchstart', onPhase1Touch);
+    }, 0);
 
     gameState.timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
