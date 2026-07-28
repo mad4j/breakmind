@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BreakMind - Gioco di memoria con numeri">
+    <meta name="theme-color" content="#2196F3">
+    <title>BreakMind - Memory Game</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BreakMind</h1>
+            <div class="game-info">
+                <div class="timer">
+                    <span class="label">Tempo:</span>
+                    <span id="time">10.0</span>s
+                </div>
+                <div class="next-number">
+                    <span class="label">Prossimo:</span>
+                    <span id="next">1</span>
+                </div>
+                <div class="score">
+                    <span class="label">Punteggio:</span>
+                    <span id="score">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div id="game-area" class="game-area">
+                <!-- Token verranno generati qui -->
+            </div>
+
+            <div id="game-over" class="game-over hidden">
+                <h2 id="game-over-title">Game Over!</h2>
+                <p id="game-over-message"></p>
+                <button id="restart-btn" class="btn-restart">Riprova</button>
+            </div>
+
+            <div id="start-screen" class="start-screen">
+                <h2>Benvenuto a BreakMind!</h2>
+                <p>Clicca i numeri in ordine crescente (da 1 a 9) prima che scada il tempo!</p>
+                <button id="start-btn" class="btn-start">Inizia</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
