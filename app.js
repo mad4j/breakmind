@@ -37,8 +37,7 @@ restartBtn.addEventListener('click', () => {
 
 function startGame() {
     // Clean up any lingering phase-1 listeners from previous session
-    document.removeEventListener('click', onPhase1Touch);
-    document.removeEventListener('touchstart', onPhase1Touch);
+    cleanupPhase1Listeners();
 
     gameState = {
         tokens: [],
@@ -59,10 +58,14 @@ function startGame() {
     startPhase1Timer();
 }
 
+function cleanupPhase1Listeners() {
+    document.removeEventListener('click', onPhase1Touch);
+    document.removeEventListener('touchstart', onPhase1Touch);
+}
+
 function onPhase1Touch() {
     if (gameState.phase === 1 && gameState.isGameActive) {
-        document.removeEventListener('click', onPhase1Touch);
-        document.removeEventListener('touchstart', onPhase1Touch);
+        cleanupPhase1Listeners();
         clearInterval(gameState.timerInterval);
         startPhase2();
     }
@@ -79,8 +82,7 @@ function startPhase1Timer() {
         const elapsed = Date.now() - startTime;
 
         if (elapsed >= maxDuration) {
-            document.removeEventListener('click', onPhase1Touch);
-            document.removeEventListener('touchstart', onPhase1Touch);
+            cleanupPhase1Listeners();
             gameState.phase1Elapsed = 10.0;
             clearInterval(gameState.timerInterval);
             updateDisplay();
@@ -211,8 +213,7 @@ function updateDisplay() {
 function endGame(victory) {
     gameState.isGameActive = false;
     clearInterval(gameState.timerInterval);
-    document.removeEventListener('click', onPhase1Touch);
-    document.removeEventListener('touchstart', onPhase1Touch);
+    cleanupPhase1Listeners();
 
     // Clear tokens from DOM and hide game area
     gameArea.innerHTML = '';
