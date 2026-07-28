@@ -21,7 +21,6 @@ const phaseLabelDisplay = document.getElementById('phase-label');
 const scoreDisplay = document.getElementById('score');
 const gameOverTitle = document.getElementById('game-over-title');
 const gameOverMessage = document.getElementById('game-over-message');
-const mobileViewportQuery = window.matchMedia('(max-width: 600px)');
 
 // Initialize service worker
 if ('serviceWorker' in navigator) {
@@ -123,7 +122,7 @@ function startPhase2() {
 function generateTokens() {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const gameAreaRect = gameArea.getBoundingClientRect();
-    const tokenSize = mobileViewportQuery.matches ? 46 : 56;
+    const tokenSize = 56;
     const gridSize = 3;
     const cellWidth = gameAreaRect.width / gridSize;
     const cellHeight = gameAreaRect.height / gridSize;
