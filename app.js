@@ -75,8 +75,12 @@ function startPhase1Timer() {
     const startTime = Date.now();
     const maxDuration = 10000;
 
-    document.addEventListener('click', onPhase1Touch);
-    document.addEventListener('touchstart', onPhase1Touch);
+    // Defer listener registration so the click that started the game
+    // finishes bubbling before we begin listening for the phase-1 tap.
+    setTimeout(() => {
+        document.addEventListener('click', onPhase1Touch);
+        document.addEventListener('touchstart', onPhase1Touch);
+    }, 0);
 
     gameState.timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
