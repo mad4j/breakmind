@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+:root {
+    --page-padding: 12px;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f0f0f0;
@@ -13,10 +17,10 @@ body {
     justify-content: center;
     align-items: stretch;
     padding:
-        calc(12px + env(safe-area-inset-top))
-        calc(12px + env(safe-area-inset-right))
-        calc(12px + env(safe-area-inset-bottom))
-        calc(12px + env(safe-area-inset-left));
+        calc(var(--page-padding) + env(safe-area-inset-top))
+        calc(var(--page-padding) + env(safe-area-inset-right))
+        calc(var(--page-padding) + env(safe-area-inset-bottom))
+        calc(var(--page-padding) + env(safe-area-inset-left));
 }
 
 @supports (height: 100dvh) {
@@ -239,12 +243,8 @@ main {
 }
 
 @media (max-width: 600px) {
-    body {
-        padding:
-            calc(8px + env(safe-area-inset-top))
-            calc(8px + env(safe-area-inset-right))
-            calc(8px + env(safe-area-inset-bottom))
-            calc(8px + env(safe-area-inset-left));
+    :root {
+        --page-padding: 8px;
     }
 
     h1 {
