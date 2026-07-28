@@ -4,15 +4,29 @@
     box-sizing: border-box;
 }
 
+:root {
+    --page-padding: 12px;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f0f0f0;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: stretch;
-    padding: 12px;
+    padding:
+        calc(var(--page-padding) + env(safe-area-inset-top))
+        calc(var(--page-padding) + env(safe-area-inset-right))
+        calc(var(--page-padding) + env(safe-area-inset-bottom))
+        calc(var(--page-padding) + env(safe-area-inset-left));
+}
+
+@supports (height: 100dvh) {
+    body {
+        min-height: 100dvh;
+    }
 }
 
 .container {
@@ -197,7 +211,7 @@ main {
 
 .btn-ready {
     position: absolute;
-    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -229,8 +243,8 @@ main {
 }
 
 @media (max-width: 600px) {
-    body {
-        padding: 8px;
+    :root {
+        --page-padding: 8px;
     }
 
     h1 {
