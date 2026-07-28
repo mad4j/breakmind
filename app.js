@@ -15,11 +15,8 @@ const startScreen = document.getElementById('start-screen');
 const gameOverScreen = document.getElementById('game-over');
 const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
-const readyBtn = document.getElementById('ready-btn');
 const timeDisplay = document.getElementById('time');
 const phaseLabelDisplay = document.getElementById('phase-label');
-const nextContainer = document.querySelector('.next-number');
-const nextDisplay = document.getElementById('next');
 const scoreDisplay = document.getElementById('score');
 const gameOverTitle = document.getElementById('game-over-title');
 const gameOverMessage = document.getElementById('game-over-message');
@@ -37,12 +34,6 @@ restartBtn.addEventListener('click', () => {
     gameOverScreen.classList.add('hidden');
     startGame();
 });
-readyBtn.addEventListener('click', () => {
-    if (gameState.phase === 1 && gameState.isGameActive) {
-        clearInterval(gameState.timerInterval);
-        startPhase2();
-    }
-});
 
 function startGame() {
     gameState = {
@@ -58,21 +49,34 @@ function startGame() {
     gameArea.innerHTML = '';
     gameArea.classList.remove('hidden');
     startScreen.classList.add('hidden');
-    readyBtn.classList.remove('hidden');
 
     updateDisplay();
     generateTokens();
     startPhase1Timer();
 }
 
+function onPhase1Touch() {
+    if (gameState.phase === 1 && gameState.isGameActive) {
+        document.removeEventListener('click', onPhase1Touch);
+        document.removeEventListener('touchstart', onPhase1Touch);
+        clearInterval(gameState.timerInterval);
+        startPhase2();
+    }
+}
+
 function startPhase1Timer() {
     const startTime = Date.now();
     const maxDuration = 10000;
+
+    document.addEventListener('click', onPhase1Touch);
+    document.addEventListener('touchstart', onPhase1Touch);
 
     gameState.timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
 
         if (elapsed >= maxDuration) {
+            document.removeEventListener('click', onPhase1Touch);
+            document.removeEventListener('touchstart', onPhase1Touch);
             gameState.phase1Elapsed = 10.0;
             clearInterval(gameState.timerInterval);
             updateDisplay();
@@ -85,7 +89,6 @@ function startPhase1Timer() {
 }
 
 function startPhase2() {
-    readyBtn.classList.add('hidden');
     gameState.phase = 2;
     gameState.nextNumber = 1;
 
@@ -193,13 +196,10 @@ function updateDisplay() {
         const remaining = Math.max(0, 10.0 - gameState.phase1Elapsed);
         timeDisplay.textContent = remaining.toFixed(1);
         phaseLabelDisplay.textContent = 'Memorizza:';
-        nextContainer.classList.add('hidden');
         scoreDisplay.textContent = '---';
     } else {
         timeDisplay.textContent = gameState.phase2Elapsed.toFixed(1);
         phaseLabelDisplay.textContent = 'Ricorda:';
-        nextContainer.classList.remove('hidden');
-        nextDisplay.textContent = gameState.nextNumber;
         const total = gameState.phase1Elapsed + gameState.phase2Elapsed;
         scoreDisplay.textContent = total.toFixed(1) + 's';
     }
@@ -208,7 +208,8 @@ function updateDisplay() {
 function endGame(victory) {
     gameState.isGameActive = false;
     clearInterval(gameState.timerInterval);
-    readyBtn.classList.add('hidden');
+    document.removeEventListener('click', onPhase1Touch);
+    document.removeEventListener('touchstart', onPhase1Touch);
 
     // Clear tokens from DOM and hide game area
     gameArea.innerHTML = '';
@@ -226,6 +227,6 @@ function endGame(victory) {
     } else {
         gameOverTitle.textContent = 'Sbagliato!';
         gameOverTitle.className = 'defeat';
-        gameOverMessage.textContent = `Hai premuto il token sbagliato! Riprova.`;
+        gameOverMessage.textContent = `Hai premuto il token sbagliato! Nessun punteggio.`;
     }
 }
