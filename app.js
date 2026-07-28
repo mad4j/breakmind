@@ -45,10 +45,12 @@ function startGame() {
         isGameActive: true
     };
 
+    // Clear previous game tokens
+    gameArea.innerHTML = '';
+
     // Update UI
     updateDisplay();
     startScreen.classList.add('hidden');
-    gameArea.innerHTML = '';
 
     // Generate tokens
     generateTokens();
@@ -162,7 +164,7 @@ function startTimer() {
             gameState.timeRemaining = remaining / 1000;
             updateDisplay();
         }
-    }, 50); // Update every 50ms for smooth display
+    }, 100); // Update every 100ms for smooth display
 }
 
 function updateDisplay() {
