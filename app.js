@@ -36,6 +36,10 @@ restartBtn.addEventListener('click', () => {
 });
 
 function startGame() {
+    // Clean up any lingering phase-1 listeners from previous session
+    document.removeEventListener('click', onPhase1Touch);
+    document.removeEventListener('touchstart', onPhase1Touch);
+
     gameState = {
         tokens: [],
         nextNumber: 1,
@@ -200,8 +204,7 @@ function updateDisplay() {
     } else {
         timeDisplay.textContent = gameState.phase2Elapsed.toFixed(1);
         phaseLabelDisplay.textContent = 'Ricorda:';
-        const total = gameState.phase1Elapsed + gameState.phase2Elapsed;
-        scoreDisplay.textContent = total.toFixed(1) + 's';
+        scoreDisplay.textContent = '---';
     }
 }
 
