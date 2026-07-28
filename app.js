@@ -121,50 +121,29 @@ function startPhase2() {
 
 function generateTokens() {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const positions = [];
-    
     const gameAreaRect = gameArea.getBoundingClientRect();
-    const tokenSize = 60;
-    const padding = 10;
-    const maxAttempts = 100;
+    const tokenSize = 56;
+    const gridSize = 3;
+    const cellWidth = gameAreaRect.width / gridSize;
+    const cellHeight = gameAreaRect.height / gridSize;
+    const cells = [];
 
-    numbers.forEach(num => {
-        let position = null;
-        let attempts = 0;
-
-        while (!position && attempts < maxAttempts) {
-            const x = Math.random() * (gameAreaRect.width - tokenSize - 2 * padding) + padding;
-            const y = Math.random() * (gameAreaRect.height - tokenSize - 2 * padding) + padding;
-
-            const overlaps = positions.some(pos => {
-                const dx = pos.x - x;
-                const dy = pos.y - y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                return distance < tokenSize + padding;
-            });
-
-            if (!overlaps) {
-                position = { x, y };
-            }
-            attempts++;
+    for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+            cells.push({ row, col });
         }
+    }
 
-        if (!position) {
-            // Fallback: grid position
-            const gridSize = 3;
-            const cellWidth = gameAreaRect.width / gridSize;
-            const cellHeight = gameAreaRect.height / gridSize;
-            const index = num - 1;
-            const row = Math.floor(index / gridSize);
-            const col = index % gridSize;
-            position = {
-                x: col * cellWidth + (cellWidth - tokenSize) / 2,
-                y: row * cellHeight + (cellHeight - tokenSize) / 2
-            };
-        }
+    for (let i = cells.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cells[i], cells[j]] = [cells[j], cells[i]];
+    }
 
-        positions.push(position);
-        createToken(num, position.x, position.y);
+    numbers.forEach((num, index) => {
+        const cell = cells[index];
+        const x = cell.col * cellWidth + (cellWidth - tokenSize) / 2;
+        const y = cell.row * cellHeight + (cellHeight - tokenSize) / 2;
+        createToken(num, x, y);
     });
 }
 
