@@ -7,12 +7,17 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f0f0f0;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: stretch;
-    padding: 12px;
+    padding:
+        calc(12px + env(safe-area-inset-top))
+        calc(12px + env(safe-area-inset-right))
+        calc(12px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
 }
 
 .container {
@@ -197,7 +202,7 @@ main {
 
 .btn-ready {
     position: absolute;
-    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -230,7 +235,11 @@ main {
 
 @media (max-width: 600px) {
     body {
-        padding: 8px;
+        padding:
+            calc(8px + env(safe-area-inset-top))
+            calc(8px + env(safe-area-inset-right))
+            calc(8px + env(safe-area-inset-bottom))
+            calc(8px + env(safe-area-inset-left));
     }
 
     h1 {
