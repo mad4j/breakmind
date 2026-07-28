@@ -177,6 +177,8 @@ function endGame(victory) {
     gameState.isGameActive = false;
     clearInterval(gameState.timerInterval);
 
+    // Clear tokens from DOM
+    gameArea.innerHTML = '';
     gameArea.classList.add('hidden');
     gameOverScreen.classList.remove('hidden');
 
