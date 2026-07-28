@@ -19,10 +19,6 @@
                     <span class="label" id="phase-label">Memorizza:</span>
                     <span id="time">10.0</span>s
                 </div>
-                <div class="next-number">
-                    <span class="label">Prossimo:</span>
-                    <span id="next">1</span>
-                </div>
                 <div class="score">
                     <span class="label">Punteggio:</span>
                     <span id="score">0</span>
@@ -35,8 +31,6 @@
                 <!-- Token verranno generati qui -->
             </div>
 
-            <button id="ready-btn" class="btn-ready hidden">Pronto!</button>
-
             <div id="game-over" class="game-over hidden">
                 <h2 id="game-over-title">Game Over!</h2>
                 <p id="game-over-message"></p>
@@ -46,7 +40,7 @@
             <div id="start-screen" class="start-screen">
                 <h2>Benvenuto a BreakMind!</h2>
                 <p>Il gioco si divide in due fasi.<br>
-                   <strong>Fase 1 – Memorizza:</strong> osserva le posizioni dei numeri (max 10s), poi premi "Pronto!" quando sei pronto.<br>
+                   <strong>Fase 1 – Memorizza:</strong> osserva le posizioni dei numeri; la fase termina dopo 10 secondi oppure appena tocchi lo schermo.<br>
                    <strong>Fase 2 – Ricorda:</strong> i numeri scompaiono, clicca i token nell'ordine corretto da 1 a 9.<br>
                    Un errore e perdi! Il punteggio è la somma dei tempi delle due fasi.</p>
                 <button id="start-btn" class="btn-start">Inizia</button>
