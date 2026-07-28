@@ -4,8 +4,8 @@
   "description": "Gioco di memoria con numeri - Clicca i numeri in ordine crescente!",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#5b6ee1",
+  "theme_color": "#5b6ee1",
   "orientation": "portrait",
   "icons": [
     {
