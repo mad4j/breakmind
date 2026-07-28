@@ -45,8 +45,9 @@ function startGame() {
         isGameActive: true
     };
 
-    // Clear previous game tokens
+    // Clear previous game tokens and show game area
     gameArea.innerHTML = '';
+    gameArea.classList.remove('hidden');
 
     // Update UI
     updateDisplay();
@@ -177,7 +178,7 @@ function endGame(victory) {
     gameState.isGameActive = false;
     clearInterval(gameState.timerInterval);
 
-    // Clear tokens from DOM
+    // Clear tokens from DOM and hide game area
     gameArea.innerHTML = '';
     gameArea.classList.add('hidden');
     gameOverScreen.classList.remove('hidden');
@@ -191,9 +192,4 @@ function endGame(victory) {
         gameOverTitle.className = 'defeat';
         gameOverMessage.textContent = `Hai raggiunto il numero ${gameState.nextNumber - 1}. Punteggio: ${gameState.score} punti. Riprova!`;
     }
-
-    // Show game area again for next game
-    setTimeout(() => {
-        gameArea.classList.remove('hidden');
-    }, 100);
 }
