@@ -2,8 +2,9 @@
 let gameState = {
     tokens: [],
     nextNumber: 1,
-    score: 0,
-    timeRemaining: 10.0,
+    phase: 1,
+    phase1Elapsed: 0,
+    phase2Elapsed: 0,
     timerInterval: null,
     isGameActive: false
 };
@@ -14,7 +15,10 @@ const startScreen = document.getElementById('start-screen');
 const gameOverScreen = document.getElementById('game-over');
 const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
+const readyBtn = document.getElementById('ready-btn');
 const timeDisplay = document.getElementById('time');
+const phaseLabelDisplay = document.getElementById('phase-label');
+const nextContainer = document.querySelector('.next-number');
 const nextDisplay = document.getElementById('next');
 const scoreDisplay = document.getElementById('score');
 const gameOverTitle = document.getElementById('game-over-title');
@@ -33,31 +37,69 @@ restartBtn.addEventListener('click', () => {
     gameOverScreen.classList.add('hidden');
     startGame();
 });
+readyBtn.addEventListener('click', () => {
+    if (gameState.phase === 1 && gameState.isGameActive) {
+        clearInterval(gameState.timerInterval);
+        startPhase2();
+    }
+});
 
 function startGame() {
-    // Reset game state
     gameState = {
         tokens: [],
         nextNumber: 1,
-        score: 0,
-        timeRemaining: 10.0,
+        phase: 1,
+        phase1Elapsed: 0,
+        phase2Elapsed: 0,
         timerInterval: null,
         isGameActive: true
     };
 
-    // Clear previous game tokens and show game area
     gameArea.innerHTML = '';
     gameArea.classList.remove('hidden');
-
-    // Update UI
-    updateDisplay();
     startScreen.classList.add('hidden');
+    readyBtn.classList.remove('hidden');
 
-    // Generate tokens
+    updateDisplay();
     generateTokens();
+    startPhase1Timer();
+}
 
-    // Start timer
-    startTimer();
+function startPhase1Timer() {
+    const startTime = Date.now();
+    const maxDuration = 10000;
+
+    gameState.timerInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+
+        if (elapsed >= maxDuration) {
+            gameState.phase1Elapsed = 10.0;
+            clearInterval(gameState.timerInterval);
+            updateDisplay();
+            startPhase2();
+        } else {
+            gameState.phase1Elapsed = elapsed / 1000;
+            updateDisplay();
+        }
+    }, 100);
+}
+
+function startPhase2() {
+    readyBtn.classList.add('hidden');
+    gameState.phase = 2;
+    gameState.nextNumber = 1;
+
+    gameState.tokens.forEach(token => {
+        token.classList.add('number-hidden');
+    });
+
+    updateDisplay();
+
+    const startTime = Date.now();
+    gameState.timerInterval = setInterval(() => {
+        gameState.phase2Elapsed = (Date.now() - startTime) / 1000;
+        updateDisplay();
+    }, 100);
 }
 
 function generateTokens() {
@@ -125,11 +167,11 @@ function createToken(number, x, y) {
 
 function handleTokenClick(number, token) {
     if (!gameState.isGameActive) return;
+    if (gameState.phase !== 2) return;
 
     if (number === gameState.nextNumber) {
         // Correct click
         token.classList.add('correct');
-        gameState.score += 10;
         gameState.nextNumber++;
 
         updateDisplay();
@@ -139,57 +181,51 @@ function handleTokenClick(number, token) {
             endGame(true);
         }
     } else {
-        // Wrong click
+        // Wrong click in phase 2 → game over
         token.classList.add('wrong');
-        setTimeout(() => {
-            if (token.classList.contains('wrong')) {
-                token.classList.remove('wrong');
-            }
-        }, 500);
+        gameState.isGameActive = false;
+        setTimeout(() => endGame(false), 400);
     }
 }
 
-function startTimer() {
-    const startTime = Date.now();
-    const duration = 10000; // 10 seconds in milliseconds
-
-    gameState.timerInterval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const remaining = duration - elapsed;
-
-        if (remaining <= 0) {
-            gameState.timeRemaining = 0;
-            updateDisplay();
-            endGame(false);
-        } else {
-            gameState.timeRemaining = remaining / 1000;
-            updateDisplay();
-        }
-    }, 100); // Update every 100ms for smooth display
-}
-
 function updateDisplay() {
-    timeDisplay.textContent = gameState.timeRemaining.toFixed(1);
-    nextDisplay.textContent = gameState.nextNumber;
-    scoreDisplay.textContent = gameState.score;
+    if (gameState.phase === 1) {
+        const remaining = Math.max(0, 10.0 - gameState.phase1Elapsed);
+        timeDisplay.textContent = remaining.toFixed(1);
+        phaseLabelDisplay.textContent = 'Memorizza:';
+        nextContainer.classList.add('hidden');
+        scoreDisplay.textContent = '---';
+    } else {
+        timeDisplay.textContent = gameState.phase2Elapsed.toFixed(1);
+        phaseLabelDisplay.textContent = 'Ricorda:';
+        nextContainer.classList.remove('hidden');
+        nextDisplay.textContent = gameState.nextNumber;
+        const total = gameState.phase1Elapsed + gameState.phase2Elapsed;
+        scoreDisplay.textContent = total.toFixed(1) + 's';
+    }
 }
 
 function endGame(victory) {
     gameState.isGameActive = false;
     clearInterval(gameState.timerInterval);
+    readyBtn.classList.add('hidden');
 
     // Clear tokens from DOM and hide game area
     gameArea.innerHTML = '';
     gameArea.classList.add('hidden');
     gameOverScreen.classList.remove('hidden');
 
+    const p1 = gameState.phase1Elapsed.toFixed(1);
+    const p2 = gameState.phase2Elapsed.toFixed(1);
+    const total = (gameState.phase1Elapsed + gameState.phase2Elapsed).toFixed(1);
+
     if (victory) {
         gameOverTitle.textContent = 'Vittoria!';
         gameOverTitle.className = 'victory';
-        gameOverMessage.textContent = `Complimenti! Hai completato il gioco con un punteggio di ${gameState.score} punti!`;
+        gameOverMessage.textContent = `Complimenti! Punteggio: ${total}s (Fase 1: ${p1}s + Fase 2: ${p2}s)`;
     } else {
-        gameOverTitle.textContent = 'Tempo Scaduto!';
+        gameOverTitle.textContent = 'Sbagliato!';
         gameOverTitle.className = 'defeat';
-        gameOverMessage.textContent = `Hai raggiunto il numero ${gameState.nextNumber - 1}. Punteggio: ${gameState.score} punti. Riprova!`;
+        gameOverMessage.textContent = `Hai premuto il token sbagliato! Riprova.`;
     }
 }
